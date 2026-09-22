@@ -1,0 +1,38 @@
+name: Generate Funny AI Video
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r app/requirements.txt
+
+      - name: Generate video
+        run: |
+          python app/video.py
+
+      - name: Upload video
+        uses: actions/upload-artifact@v4
+        with:
+          name: funny-ai-video
+          path: output/funny_video.mp4
+          retention-days: 7
